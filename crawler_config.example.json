@@ -1,0 +1,14 @@
+{
+  "manga": {
+    "input_file": "titles_manga.txt",
+    "content_type": "manga",
+    "chapters": 3,
+    "fresh_start": false
+  },
+  "novel": {
+    "input_file": "titles_novel.txt",
+    "content_type": "novel",
+    "chapters": 3,
+    "fresh_start": false
+  }
+}

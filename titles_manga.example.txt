@@ -1,0 +1,6 @@
+# Copy this file to titles_manga.txt and add local manga/manhua/manhwa titles
+# or direct URLs, one per line.
+#
+# Example:
+# example manga title
+# https://example.com/manga/example-title/

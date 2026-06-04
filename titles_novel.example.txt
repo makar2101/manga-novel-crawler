@@ -1,0 +1,6 @@
+# Copy this file to titles_novel.txt and add local text novel titles or direct
+# URLs, one per line.
+#
+# Example:
+# example novel title
+# https://example.com/novel/example-title/
