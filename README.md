@@ -1,37 +1,24 @@
-# Manga and Novel Dataset Crawler
+# Manga Novel Crawler
 
-Python utility for building a local manga/light-novel dataset with
-[`lightnovel-crawler`](https://github.com/dipu-bd/lightnovel-crawler). It can:
+[![CI](https://github.com/makar2101/manga-novel-crawler/actions/workflows/ci.yml/badge.svg)](https://github.com/makar2101/manga-novel-crawler/actions/workflows/ci.yml)
 
-- download manga/manhua/manhwa pages into a normalized image folder structure;
-- export text novel chapters into plain `.txt` files;
-- repair missing manga images from the crawler database;
-- write a manifest and validation report for every run.
+Personal Python script for collecting manga/manhua/manhwa pages and light-novel
+chapters into a local dataset. It is built around
+[`lightnovel-crawler`](https://github.com/lncrawl/lightnovel-crawler).
 
-This repository contains code and safe examples only. Downloaded content, local
-crawler cache, local title lists, IDE files, and virtual environments are
-ignored by git.
+This repo is for the code only. Downloaded content, crawler cache, local config,
+title lists, logs, and virtual environments are intentionally ignored.
 
-## Repository Layout
+## What It Produces
 
 ```text
-crawl_dataset.py                Main entrypoint.
-run_lncrawl_with_workers.py     Wrapper that applies the LNCRAWL_WORKERS patch.
-crawler_config.example.json     Safe config template for local runs.
-titles_manga.example.txt        Example local manga title file.
-titles_novel.example.txt        Example local novel title file.
-requirements.txt                Runtime dependency list.
-tests/                          Lightweight standard-library tests.
-docs/publication-checklist.md   Checklist before publishing or releasing.
+output/manga_dataset/photos/<title>/chapter-00001/   manga page images
+output/manga_dataset/data/10_raw/<title>/00001.txt   novel chapter text
+output/manga_dataset/manifest.json                   run manifest
+output/manga_dataset/validation_report.txt           validation summary
 ```
 
-Runtime artifacts are written under `output/` and `.lncrawl_data/` by default.
-These directories can be large and may contain copyrighted material, so they
-must stay out of git.
-
 ## Setup
-
-Use Python 3.10 or newer.
 
 ```bash
 python3 -m venv .venv
@@ -42,25 +29,18 @@ cp titles_manga.example.txt titles_manga.txt
 cp titles_novel.example.txt titles_novel.txt
 ```
 
-Edit `titles_manga.txt` and/or `titles_novel.txt`. Add one title or direct URL
-per line. Blank lines and lines starting with `#` are ignored.
-
-Then run:
+Add one title or direct URL per line to `titles_manga.txt` or
+`titles_novel.txt`, then run:
 
 ```bash
 .venv/bin/python crawl_dataset.py
 ```
 
-The script intentionally does not accept CLI options. Change
-`crawler_config.json` instead, or point to another config file:
+The script does not use CLI flags. Edit `crawler_config.json` instead.
 
-```bash
-CRAWLER_CONFIG=path/to/config.json .venv/bin/python crawl_dataset.py
-```
+## Config
 
-## Configuration
-
-The default config has separate blocks for manga and novels:
+Default example:
 
 ```json
 {
@@ -79,64 +59,52 @@ The default config has separate blocks for manga and novels:
 }
 ```
 
-`content_type` values:
+Useful values:
 
-- `manga`: export image pages.
-- `novel`: export text chapters.
-- `auto`: search/export both kinds from the same input file.
+- `content_type`: `manga`, `novel`, or `auto`.
+- `chapters`: a number like `3` / `25`, or `"all"`.
+- `fresh_start`: `true` removes the configured `output/` and `.lncrawl_data/`
+  before the next run.
 
-`chapters` values:
-
-- `3`: download/export only the first 3 chapters.
-- `25`: download/export only the first 25 chapters.
-- `"all"`: download/export every available chapter.
-
-Set `"fresh_start": true` to remove the configured `output/` and
-`.lncrawl_data/` paths before the next run. The script refuses to delete paths
-outside the project directory.
-
-## Output
-
-Manga pages:
+## Files
 
 ```text
-output/manga_dataset/photos/<title-slug>/chapter-00001/
+crawl_dataset.py                main script
+run_lncrawl_with_workers.py     lightnovel-crawler worker patch
+crawler_config.example.json     safe config example
+titles_manga.example.txt        title-list example
+titles_novel.example.txt        title-list example
+requirements.txt                dependencies
+tests/                          small smoke tests
 ```
 
-Text novel chapters:
+## Do Not Commit
+
+These are local/generated files and should stay out of git:
 
 ```text
-output/manga_dataset/data/10_raw/<title-slug>/00001.txt
+output/
+.lncrawl_data/
+.venv/
+.idea/
+__pycache__/
+crawler_config.json
+titles_manga.txt
+titles_novel.txt
+*.log
+*.db
 ```
 
-Run metadata:
+Do not publish downloaded manga pages, novel text, crawler databases, or logs
+unless you have the rights to share them.
 
-```text
-output/manga_dataset/manifest.json
-output/manga_dataset/validation_report.json
-output/manga_dataset/validation_report.txt
-```
-
-## Verification
-
-Run local checks before committing:
+## Checks
 
 ```bash
 python3 -m py_compile crawl_dataset.py run_lncrawl_with_workers.py
 python3 -m unittest discover -s tests
 ```
 
-## Public Repository Safety
-
-- Do not commit `output/`, `.lncrawl_data/`, `.venv/`, `.idea/`,
-  `__pycache__/`, local configs, or local title files.
-- Do not publish downloaded manga pages, novel text, crawler databases, or logs
-  unless you have the required rights.
-- Review source-site terms of service and robots policies before crawling.
-- Keep crawl limits conservative in shared examples. Use `"chapters": "all"`
-  only when you explicitly want a full download.
-
 ## License
 
-No license has been selected yet. Add a `LICENSE` file before inviting external
-reuse or contributions.
+No license is selected yet.
