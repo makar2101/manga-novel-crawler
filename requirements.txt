@@ -1,0 +1,1 @@
+lightnovel-crawler==4.2.1
